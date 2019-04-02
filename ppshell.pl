@@ -20,6 +20,7 @@ use constant CURR_READER => 'CURR_READER';
 
 my %ssh_connections;
 my $active_conn;
+my $pmode = 0;
 
 sub print_prompt {
     my $p = '$ ';
@@ -32,6 +33,10 @@ sub print_prompt {
 print_prompt();
 while (my $l = <>) {
     chomp($l);
+    if ($pmode) {
+        system("stty", "echo");
+        $pmode = 0;
+    }
     
     if (index($l, CMD_IDF) == 0) {
         command_handler($l);
@@ -54,6 +59,7 @@ sub command_handler {
         when (/^\/r(ead)?\b/) { output_reader() }
         when (/^\/sw(itch)?\b/) { switch_active(@args) }
         when (/^\/c(lose)?\b/) { close_shell(@args) }
+        when (/^\/p(assmode)?\b/) { password_mode() }
     }
 }
 
@@ -126,3 +132,7 @@ sub close_shell {
     }
 }
 
+sub password_mode {
+    system("stty", "-echo");
+    $pmode = 1;
+}
