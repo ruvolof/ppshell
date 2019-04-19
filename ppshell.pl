@@ -13,7 +13,7 @@ autoflush STDOUT 1;
 use Data::Dumper qw(Dumper);
 use Net::OpenSSH;
 
-use constant CMD_IDF => '/';
+use constant CMD_IDF => '.';
 use constant SSH_INSTANCE => 'SSH_INSTANCE';
 use constant CHANNELS => 'CHANNELS';
 use constant CURR_READER => 'CURR_READER';
@@ -62,16 +62,19 @@ sub command_handler {
     my $cmd = $_[0];
     my @args = split / /, $cmd;
     
-    for ($args[0]) {
-        when (/^\/e(xit)?\b/) { do_exit() }
-        when (/^\/o(pen)?\b/) { open_new_shell(@args) }
-        when (/^\/r(ead)?\b/) { output_reader() }
-        when (/^\/sw(itch)?\b/) { switch_active(@args) }
-        when (/^\/c(lose)?\b/) { close_shell(@args) }
-        when (/^\/p(assmode)?\b/) { password_mode() }
-        when (/^\/ag(roup)?\b/) { add_group(@args) }
-        when (/^\/rg(roup)?\b/) { rm_group(@args) }
-        when (/^\/lsg(roup)?\b/) { ls_group(@args) }
+    my $c = substr $args[0], 1;
+    
+    for ($c) {
+        when (/^e(xit)?\b/) { do_exit() }
+        when (/^o(pen)?\b/) { open_new_shell(@args) }
+        when (/^r(ead)?\b/) { output_reader() }
+        when (/^sw(itch)?\b/) { switch_active(@args) }
+        when (/^c(lose)?\b/) { close_shell(@args) }
+        when (/^p(assmode)?\b/) { password_mode() }
+        when (/^ag(roup)?\b/) { add_group(@args) }
+        when (/^rg(roup)?\b/) { rm_group(@args) }
+        when (/^lsg(roup)?\b/) { ls_group(@args) }
+        default { print "$c: command not found\n" }
     }
 }
 
