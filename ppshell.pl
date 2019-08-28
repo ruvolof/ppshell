@@ -39,7 +39,7 @@ sub handle_input {
         system("stty", "echo");
         $pmode = 0;
     }
-    
+
     if (index($l, CMD_IDF) == 0) {
         command_handler($l);
     }
@@ -61,13 +61,14 @@ sub handle_input {
 sub command_handler {
     my $cmd = $_[0];
     my @args = split / /, $cmd;
-    
+
     my $c = substr $args[0], 1;
-    
+
     for ($c) {
         when (/^e(xit)?\b/) { do_exit() }
         when (/^o(pen)?\b/) { open_new_shell(@args) }
         when (/^r(ead)?\b/) { output_reader() }
+        when (/^lsh(host)?\b/) { list_hosts() }
         when (/^sw(itch)?\b/) { switch_active(@args) }
         when (/^c(lose)?\b/) { close_shell(@args) }
         when (/^p(assmode)?\b/) { password_mode() }
@@ -115,10 +116,22 @@ sub open_new_shell {
     my @connection_channels = $nssh->open2({tty => 0, stderr_to_stdout => 1});
     $connection_channels[1]->blocking(0);
     $connection_channels[1]->autoflush();
-  
+
     $ssh_connections{$ep}{SSH_INSTANCE} = $nssh;
     $ssh_connections{$ep}{CHANNELS} = [@connection_channels];
     $active_conn = $ep;
+}
+
+sub list_hosts {
+    if (scalar(%ssh_connections) > 0) {
+        print "Available connections:\n";
+        for my $k (keys %ssh_connections) {
+            print "- $k\n";
+      }
+    }
+    else {
+        print "No active connections found.";
+    }
 }
 
 sub switch_active {
@@ -179,9 +192,9 @@ sub add_group {
         print STDERR "Error: /agroup needs an host and a group.\nUsage: /addgroup host group\n";
         return;
     }
-    
+
     my ($host, $group) = ($_[1], $_[2]);
-    my $valid_names = '^\s*[a-zA-Z0-9\.]+\s*$';
+    my $valid_names = '^\s*[a-zA-Z0-9\.@]+\s*$';
     if ($host =~ /$valid_names/ and $group =~ /$valid_names/) {
         if (not exists $groups{$group}) {
             $groups{$group} = {};
@@ -199,7 +212,7 @@ sub rm_group {
     if (scalar @_ < 3) {
         print STDERR "Error: /rgroup needs an host and a group.\nUsage: /rgroup host group\n";
     }
-    
+
     my ($host, $group) = ($_[1], $_[2]);
     if (exists $groups{$group}) {
         if ($host eq 'all') {
@@ -227,7 +240,7 @@ sub ls_group {
                 print "$g:\t\t@{$groups{$g}{GMEMBERS}}\n";
             }
         }
-    }   
+    }
 }
 
 print_prompt();
