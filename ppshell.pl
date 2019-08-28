@@ -65,6 +65,7 @@ sub command_handler {
     my $c = substr $args[0], 1;
 
     for ($c) {
+        when (/^h(elp)?\b/) { print_help() }
         when (/^e(xit)?\b/) { do_exit() }
         when (/^o(pen)?\b/) { open_new_shell(@args) }
         when (/^r(ead)?\b/) { output_reader() }
@@ -77,6 +78,23 @@ sub command_handler {
         when (/^lsg(roup)?\b/) { ls_group(@args) }
         default { print "$c: command not found\n" }
     }
+}
+
+sub print_help {
+    my $help = "ppshell v0.1\n";
+    $help .= ".h/.help\tPrint this help.\n";
+    $help .= ".e/.exit\tExits ppshell.\n";
+    $help .= ".o/.open\tOpen ssh connection.\n";
+    $help .= ".r/.read\tRead commands output.\n";
+    $help .= ".lsh/.lshost\tList established connections.\n";
+    $help .= ".sw/.switch\tSwitch active connection. Can use a group name.\n";
+    $help .= ".c/.close\tClose connection.\n";
+    $help .= ".p/.passmode\tHides input in ppshell.\n";
+    $help .= ".ag/.agroup\tAdd host to a group.\n";
+    $help .= ".rg/.rgroup\tRemove host from group.\n";
+    $help .= ".lsg/.lsgroup\tList groups.\n";
+
+    print $help;
 }
 
 sub do_exit {
@@ -243,6 +261,7 @@ sub ls_group {
     }
 }
 
+print "ppshell v0.1 - Type '.h' for a list of commands.\n";
 print_prompt();
 while (my $l = <>) {
     handle_input($l);
