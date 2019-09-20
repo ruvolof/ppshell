@@ -102,6 +102,7 @@ sub print_help {
 }
 
 sub do_exit {
+    close_shell('.c', 'all');
     print "Bye.\n";
     exit 0;
 }
