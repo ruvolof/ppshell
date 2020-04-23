@@ -13,7 +13,7 @@ autoflush STDOUT 1;
 use Data::Dumper qw(Dumper);
 use Net::OpenSSH;
 
-use constant CMD_IDF      => '.';
+use constant CMD_IDF      => '\\';
 use constant SSH_INSTANCE => 'SSH_INSTANCE';
 use constant CHANNELS     => 'CHANNELS';
 use constant CURR_READER  => 'CURR_READER';
@@ -84,25 +84,26 @@ sub command_handler {
 
 sub print_help {
     my $help = "ppshell v0.1\n";
-    $help .= ".h/.help\tPrint this help.\n";
-    $help .= ".e/.exit\tExits ppshell.\n";
-    $help .= ".o/.open\tOpen ssh connection.\n";
-    $help .= ".r/.read\tRead commands output.\n";
-    $help .= ".lsh/.lshost\tList established connections.\n";
-    $help .= ".sw/.switch\tSwitch active connection. Can use a group name.\n";
-    $help .= ".c/.close\tClose connection.\n";
-    $help .= ".p/.passmode\tHides input in ppshell.\n";
-    $help .= ".ag/.agroup\tAdd host to a group.\n";
-    $help .= ".rg/.rgroup\tRemove host from group.\n";
-    $help .= ".lsg/.lsgroup\tList groups.\n";
+    $help .= "Commands have to be prepended by " . CMD_IDF . ".\n";
+    $help .= "h/help\t\tPrint this help.\n";
+    $help .= "e/exit\t\tExits ppshell.\n";
+    $help .= "o/open\t\tOpen ssh connection.\n";
+    $help .= "r/read\t\tRead commands output.\n";
+    $help .= "lsh/lshost\tList established connections.\n";
+    $help .= "sw/switch\tSwitch active connection. Can use a group name.\n";
+    $help .= "c/close\t\tClose connection.\n";
+    $help .= "p/passmode\tHides input in ppshell.\n";
+    $help .= "ag/agroup\tAdd host to a group.\n";
+    $help .= "rg/rgroup\tRemove host from group.\n";
+    $help .= "lsg/lsgroup\tList groups.\n";
     $help .=
-      ".s/.save\tSave current connections to restore them on next launch.\n";
+      "s/save\t\tSave current connections to restore them on next launch.\n";
 
       print $help;
 }
 
 sub do_exit {
-    close_shell('.c', 'all');
+    close_shell('\c', 'all');
     print "Bye.\n";
     exit 0;
 }
@@ -174,13 +175,13 @@ sub switch_active {
         print "Active group: $sh.\n";
     }
     else {
-        print "Host not found. Use /open to open a new connections.\n";
+        print "Host not found. Use " . CMD_IDF . "open to open a new connections.\n";
     }
 }
 
 sub close_shell {
     if ( scalar @_ < 2 ) {
-        print STDERR "Error: /close needs at least an host.\n";
+        print STDERR "Error: " . CMD_IDF . "close needs at least an host.\n";
         return;
     }
 
@@ -214,7 +215,7 @@ sub password_mode {
 sub add_group {
     if ( scalar @_ < 3 ) {
         print STDERR
-"Error: /agroup needs an host and a group.\nUsage: /addgroup host group\n";
+"Error: " . CMD_IDF . "agroup needs an host and a group.\nUsage: ". CMD_IDF . "addgroup host group\n";
         return;
     }
 
@@ -237,7 +238,7 @@ sub add_group {
 sub rm_group {
     if ( scalar @_ < 3 ) {
         print STDERR
-"Error: /rgroup needs an host and a group.\nUsage: /rgroup host group\n";
+"Error: " . CMD_IDF . "rgroup needs an host and a group.\nUsage: " . CMD_IDF . "rgroup host group\n";
     }
 
     my ( $host, $group ) = ( $_[1], $_[2] );
@@ -280,7 +281,7 @@ sub save_conf {
     close($fh);
 }
 
-print "ppshell v0.1 - Type '.h' for a list of commands.\n";
+print "ppshell v0.1 - Type '". CMD_IDF . "h' for a list of commands.\n";
 
 if ( -e INITFILE ) {
     open(my $fh, '<', INITFILE);
