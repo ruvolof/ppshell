@@ -70,7 +70,7 @@ sub command_handler {
       when (/^e(xit)?\b/) { do_exit() }
       when (/^o(pen)?\b/) { open_new_shell(@args) }
       when (/^r(ead)?\b/) { output_reader() }
-      when (/^lsh(host)?\b/) { list_hosts() }
+      when (/^lsh(ost)?\b/) { list_hosts() }
       when (/^sw(itch)?\b/) { switch_active(@args) }
       when (/^c(lose)?\b/) { close_shell(@args) }
       when (/^p(assmode)?\b/) { password_mode() }
