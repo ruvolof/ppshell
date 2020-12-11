@@ -95,7 +95,7 @@ sub print_help {
   $help .= "p/passmode\tHides input in ppshell.\n";
   $help .= "ag/agroup\tAdd host to a group.\n";
   $help .= "rg/rgroup\tRemove host from group.\n";
-  $help .= "lsg/lsgroup\tList groups.\n";
+  $help .= "lsg/lsgroups\tList groups.\n";
   $help .=
     "s/save\t\tSave current connections to restore them on next launch.\n";
 
@@ -292,7 +292,7 @@ if (-e INITFILE) {
   my $line = <$fh>;
   chomp $line;
   for my $ssh_target (split /,/, $line) {
-    open_new_shell(COMMAND_PREFIX.'o', $ssh_target);
+    open_new_shell($ssh_target);
   }
   while ($line = <$fh>) {
     chomp $line;
