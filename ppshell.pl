@@ -103,7 +103,7 @@ sub print_help {
 }
 
 sub do_exit {
-  close_shell(COMMAND_PREFIX.'c', 'all');
+  close_shell('all');
   print "Bye.\n";
   exit 0;
 }
