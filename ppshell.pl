@@ -285,28 +285,32 @@ sub save_conf {
   close($fh);
 }
 
-print "ppshell v0.1 - Type '".COMMAND_PREFIX."h' for a list of commands.\n";
+sub main {
+  print "ppshell v0.1 - Type '".COMMAND_PREFIX."h' for a list of commands.\n";
 
-if (-e INITFILE) {
-  open(my $fh, '<', INITFILE);
-  my $line = <$fh>;
-  chomp $line;
-  for my $ssh_target (split /,/, $line) {
-    open_new_shell($ssh_target);
-  }
-  while ($line = <$fh>) {
+  if (-e INITFILE) {
+    open(my $fh, '<', INITFILE);
+    my $line = <$fh>;
     chomp $line;
-    my ($group, $members) = split /:/, $line;
-    $groups{$group} = {};
-    @{$groups{$group}{GMEMBERS}} = split /,/, $members;
+    for my $ssh_target (split /,/, $line) {
+      open_new_shell($ssh_target);
+    }
+    while ($line = <$fh>) {
+      chomp $line;
+      my ($group, $members) = split /:/, $line;
+      $groups{$group} = {};
+      @{$groups{$group}{GMEMBERS}} = split /,/, $members;
+    }
+    close($fh);
+    print INITFILE." loaded.\n";
+    undef $active_conn;
   }
-  close($fh);
-  print INITFILE." loaded.\n";
-  undef $active_conn;
+
+  print_prompt();
+  while (my $input = <>) {
+    handle_input($input);
+    print_prompt();
+  }
 }
 
-print_prompt();
-while (my $input = <>) {
-  handle_input($input);
-  print_prompt();
-}
+main()
