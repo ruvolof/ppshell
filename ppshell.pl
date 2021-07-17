@@ -168,23 +168,23 @@ sub switch_active {
   my ($connection_id) = @_;
 
   if (exists $ssh_connections{$connection_id}) {
-      $active_conn = $connection_id;
-      print "Active host: ${connection_id}.\n";
+    $active_conn = $connection_id;
+    print "Active host: ${connection_id}.\n";
   }
   elsif (exists $groups{$connection_id}) {
-      $active_conn = $connection_id;
-      print "Active group: ${connection_id}.\n";
+    $active_conn = $connection_id;
+    print "Active group: ${connection_id}.\n";
   }
   else {
-      print 'Host not found. ',
-        "Use ".COMMAND_PREFIX."open to open a new connection.\n";
+    print 'Host not found. ',
+      "Use ".COMMAND_PREFIX."open to open a new connection.\n";
   }
 }
 
 sub close_shell {
   if (scalar @_ != 1) {
-      print STDERR "Error: ".COMMAND_PREFIX."close needs at least an host.\n";
-      return;
+    print STDERR "Error: ".COMMAND_PREFIX."close needs at least an host.\n";
+    return;
   }
   my ($connection_id) = @_;
 
@@ -216,10 +216,10 @@ sub password_mode {
 
 sub add_group {
   if (scalar @_ != 2) {
-      print STDERR
-        "Error: ".COMMAND_PREFIX."agroup needs an host and a group.\n",
-        "Usage: ".COMMAND_PREFIX."addgroup host group\n";
-      return;
+    print STDERR
+      "Error: ".COMMAND_PREFIX."agroup needs an host and a group.\n",
+      "Usage: ".COMMAND_PREFIX."addgroup host group\n";
+    return;
   }
   my ($host, $group) = @_;
 
@@ -278,7 +278,7 @@ sub save_conf {
   open (my $fh, '>', INITFILE);
   print $fh join(',', keys %ssh_connections), "\n";
   for my $key (keys %groups) {
-      print $fh "${key}:", join(',', @{$groups{$key}{GMEMBERS}}), "\n";
+    print $fh "${key}:", join(',', @{$groups{$key}{GMEMBERS}}), "\n";
   }
   close($fh);
 }
