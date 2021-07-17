@@ -3,15 +3,15 @@
 use strict;
 use warnings;
 use experimental "switch";
-use threads;
-use threads::shared;
 use IO::Handle;
 use IO::Select;
-
-autoflush STDOUT 1;
+use threads;
+use threads::shared;
 
 use Data::Dumper qw(Dumper);
 use Net::OpenSSH;
+
+autoflush STDOUT 1;
 
 use constant COMMAND_PREFIX => '\\';
 use constant SSH_INSTANCE => 'SSH_INSTANCE';
