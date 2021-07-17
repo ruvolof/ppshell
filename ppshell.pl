@@ -35,8 +35,6 @@ sub print_prompt {
 
 sub handle_input {
   my ($input) = @_;
-  # TODO: move chomp to where the input is received
-  chomp($input);
   if ($password_input_mode) {
     system('stty', 'echo');
     $password_input_mode = 0;
@@ -308,6 +306,7 @@ sub main {
 
   print_prompt();
   while (my $input = <>) {
+    chomp($input);
     handle_input($input);
     print_prompt();
   }
