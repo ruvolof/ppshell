@@ -128,7 +128,7 @@ sub output_reader {
 sub open_new_shell {
   if (scalar @_ != 1) {
     print STDERR 
-      "Error: ".COMMAND_PREFIX."open needs one target user\@server.\n";
+      "Error: ".COMMAND_PREFIX."open needs one target. Ex: user\@server.\n";
     return;
   }
   my ($ssh_target) = @_;
