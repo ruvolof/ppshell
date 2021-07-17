@@ -75,7 +75,7 @@ sub command_handler {
     when (/^ag(roup)?\b/) { add_group(@args) }
     when (/^rg(roup)?\b/) { remove_group(@args) }
     when (/^lsg(roups)?\b/) { list_groups(@args) }
-    when (/^s(ave)?\b/) { save_conf() }
+    when (/^s(ave)?\b/) { save_configuration() }
     default { print "${command}: command not found\n" }
   }
 }
@@ -274,7 +274,7 @@ sub list_groups {
   }
 }
 
-sub save_conf {
+sub save_configuration {
   open (my $fh, '>', INITFILE);
   print $fh join(',', keys %ssh_connections), "\n";
   for my $key (keys %groups) {
@@ -283,25 +283,29 @@ sub save_conf {
   close($fh);
 }
 
+sub load_configuration {
+  open(my $fh, '<', INITFILE);
+  my $line = <$fh>;
+  chomp $line;
+  for my $ssh_target (split /,/, $line) {
+    open_new_shell($ssh_target);
+  }
+  while ($line = <$fh>) {
+    chomp $line;
+    my ($group, $members) = split /:/, $line;
+    $groups{$group} = {};
+    @{$groups{$group}{GMEMBERS}} = split /,/, $members;
+  }
+  close($fh);
+  print INITFILE." loaded.\n";
+  undef $active_conn;
+}
+
 sub main {
   print "ppshell v0.1 - Type '".COMMAND_PREFIX."h' for a list of commands.\n";
 
   if (-e INITFILE) {
-    open(my $fh, '<', INITFILE);
-    my $line = <$fh>;
-    chomp $line;
-    for my $ssh_target (split /,/, $line) {
-      open_new_shell($ssh_target);
-    }
-    while ($line = <$fh>) {
-      chomp $line;
-      my ($group, $members) = split /:/, $line;
-      $groups{$group} = {};
-      @{$groups{$group}{GMEMBERS}} = split /,/, $members;
-    }
-    close($fh);
-    print INITFILE." loaded.\n";
-    undef $active_conn;
+    load_configuration();
   }
 
   print_prompt();
