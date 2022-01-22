@@ -243,6 +243,7 @@ sub remove_group {
     print STDERR
       "Error: ".COMMAND_PREFIX."rgroup needs a group and a host.\n".
       "Usage: ".COMMAND_PREFIX."rgroup group host\n";
+    return;
   }
   my ($group, $host) = @_;
   
